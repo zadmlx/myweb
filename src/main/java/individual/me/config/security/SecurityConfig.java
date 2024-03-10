@@ -31,7 +31,7 @@ public class SecurityConfig {
     private AuthenticationEntryPoint entryPoint;
 
     @Autowired
-    private LoginFilter loginFilter;
+    private JwtFilter loginFilter;
 
     @Bean
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {

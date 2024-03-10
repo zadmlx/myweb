@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="individual.me.repository.UserRepository">
+    <insert id="insertUser">
+        insert into user values (null,#{user.username},#{user.password},#{user.phoneNumber},#{user.birthday},sysdate(),0,'admin')
+    </insert>
+
+    <update id="updateUser">
+        UPDATE user
+        <set>
+            <if test="password != null">password = #{user.password},</if>
+            <if test="phoneNumber != null">phoneNumber = #{user.phoneNumber},</if>
+            <if test="birthday != null">birthday = #{birthday}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUserById" parameterType="int">
+        update user set user.deleted = 1 where id = #{id}
+    </delete>
+
+    <select id="getUserByUsername" resultType="individual.me.pojo.user.User">
+        select * from user where user.username = #{username}
+    </select>
+
+    <select id="getUserById" resultType="individual.me.pojo.user.User">
+        select * from user where user.id = #{id}
+    </select>
+
+
+</mapper>

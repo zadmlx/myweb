@@ -1,12 +1,12 @@
-package individual.me.pojo;
+package individual.me.pojo.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serial;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 @Getter
@@ -14,14 +14,13 @@ public final class AuthUser implements UserDetails {
 
     private final User user;
 
-
     public AuthUser(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return user.getAuthority()== null? null:Collections.singleton(new SimpleGrantedAuthority(user.getAuthority()));
     }
 
     @Override

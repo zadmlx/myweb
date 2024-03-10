@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback
+               https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
+    <!--
+       日志输出格式：
+           %-5level    :-5表示占5个字符，不足的话向左对齐
+           %d{yyyy-MM-dd HH:mm:ss.SSS}日期
+           %c类的完整名称
+           %M为method
+           %L为行号
+           %thread线程名称
+           %m或者%msg为信息
+           %n换行
+       -->
+
+    <property name="pattern"
+              value="%highlight(%date{yyyy-MM-dd HH:mm:ss.SSS}) %cyan([%thread]) %yellow(%-5level) %green(%logger{36}).%green(%M)-%magenta(%line) - %blue(%msg%n)"/>
+    <!--<property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %c [%thread] %-5level %m%n"/>-->
+
+    <property name="logDirectory" value="C:\\java_log"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--System.out输出黑色，System.err输出红色-->
+        <target>System.out</target>
+        <!--设置日志输出格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!--设置日志文件输出-->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${logDirectory}/logback.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!--设置日志级别-->
+    <root level="INFO">
+        <!--日志输出位置管理-->
+        <appender-ref ref="console"/>
+        <!--<appender-ref ref="FILE"/>-->
+    </root>
+
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+</configuration>

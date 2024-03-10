@@ -13,10 +13,6 @@ public class Result {
 
     private Result(){}
 
-    public static Result ok(){
-        return Result.ok("success",null,200);
-    }
-
     public static Result ok(String message){
         return Result.ok(message,null,200);
     }

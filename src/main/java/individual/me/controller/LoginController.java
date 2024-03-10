@@ -1,8 +1,13 @@
 package individual.me.controller;
 
-import individual.me.pojo.LoginUser;
+import individual.me.config.security.JwtUtil;
+import individual.me.pojo.user.AuthUser;
+import individual.me.pojo.user.LoginUser;
 import individual.me.pojo.Result;
-import individual.me.repository.UserRepository;
+import individual.me.pojo.user.User;
+import individual.me.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,8 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
+    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
 
     @Autowired
@@ -25,24 +31,25 @@ public class LoginController {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-
     @PostMapping("/login")
     public Result login(@RequestBody LoginUser user){
-        System.out.println("登录");
+        log.info("准备登录");
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
         Authentication authentication = this.builder.getObject().authenticate(token);
+
+        AuthUser authUser = (AuthUser) authentication.getPrincipal();
+        String authority = authUser.getUser().getAuthority();
+
+        String jwtToken = JwtUtil.createToken(authority, authUser.getUsername());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return Result.ok("注册成功");
+        return Result.ok("登录成功",jwtToken,200);
     }
 
     @PostMapping("/register")
-    public Result register(@RequestBody LoginUser user){
-        System.out.println("注册");
-        String encryptedPass = encoder.encode(user.getPassword());
-        System.out.println(encryptedPass);
-        user.setPassword(encryptedPass);
-        userRepository.insertUser(user);
+    public Result register(@RequestBody User user){
+        user.setPassword(encoder.encode(user.getPassword()));
+        userService.insertUser(user);
         return Result.ok("注册成功");
-
     }
 }
