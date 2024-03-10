@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,13 +30,17 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationEntryPoint entryPoint;
 
+    @Autowired
+    private LoginFilter loginFilter;
+
     @Bean
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {
-        security.authorizeHttpRequests(auth->auth.requestMatchers("/login").permitAll().requestMatchers("/**").authenticated())
+        security.authorizeHttpRequests(auth->auth.requestMatchers("/login","/register","/test").permitAll().requestMatchers("/**").authenticated())
                 .userDetailsService(userDetailsService)
                 .exceptionHandling(e-> e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(entryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors-> cors.configurationSource(cors()));
+                .cors(cors-> cors.configurationSource(cors()))
+                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
         return security.build();
     }
 

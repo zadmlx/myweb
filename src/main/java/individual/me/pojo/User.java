@@ -14,8 +14,6 @@ public class User {
     private LocalDateTime birthday;
     private LocalDateTime registerDate;
 
-    // 1 male,0 female
-    private int gender;
 
     public User(long id, String username, String password, LocalDateTime registerDate) {
         this.id = id;
