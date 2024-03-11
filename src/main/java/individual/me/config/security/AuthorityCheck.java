@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 public class AuthorityCheck {
 
     public boolean check(String authority){
-
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getAuthorities().stream().anyMatch(obj-> obj.getAuthority().equals(authority));
     }

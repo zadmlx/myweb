@@ -50,19 +50,17 @@ public class JwtUtil {
 
     /**
      * 踩坑：key是静态生成，每次启动生成的都不一致，导致如果重启的话，获得的私钥就不一样，导致验证出现错误！！！！
+     *      所以直接根据固定的值来生成私钥进行签名
      * @param token
      * @return
      */
     public static Authentication getAuthentication(String token){
 
-            System.out.println(token);
-            Jws<Claims> claimsJws = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token);
-            String username = claimsJws.getPayload().get(USERNAME, String.class);
-        System.out.println(username);
-            String authority = claimsJws.getPayload().get(AUTHORITY,String.class);
-        System.out.println(authority);
-            User user = new User(username,"ENCRYPTED", Collections.singleton(new SimpleGrantedAuthority(authority)));
-            return new UsernamePasswordAuthenticationToken(user,token);
+        Jws<Claims> claimsJws = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token);
+        String username = claimsJws.getPayload().get(USERNAME, String.class);
+        String authority = claimsJws.getPayload().get(AUTHORITY,String.class);
+        User user = new User(username,"ENCRYPTED", Collections.singleton(new SimpleGrantedAuthority(authority)));
+        return new UsernamePasswordAuthenticationToken(user,token);
 
     }
 }

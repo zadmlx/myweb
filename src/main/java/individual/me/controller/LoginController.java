@@ -35,6 +35,8 @@ public class LoginController {
     public Result login(@RequestBody LoginUser user){
         log.info("准备登录");
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
+
+        // AuthenticationManager无法直接拿到，需要使用它的builder构建之后拿到
         Authentication authentication = this.builder.getObject().authenticate(token);
 
         AuthUser authUser = (AuthUser) authentication.getPrincipal();

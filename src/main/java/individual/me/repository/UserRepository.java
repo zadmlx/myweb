@@ -9,7 +9,6 @@ public interface UserRepository {
 
     User getUserByUsername(@Param("username") String username);
     User getUserById(@Param("id") int id);
-
     void updateUser(@Param("user") User user);
 
     void deleteUserById(@Param("id") int id);
