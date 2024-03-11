@@ -19,6 +19,8 @@ public class User {
     private String phoneNumber;
     private LocalDateTime birthday;
     private LocalDateTime registerDate;
+
+    // 1 deleted
     private int deleted;
     private String authority;
 

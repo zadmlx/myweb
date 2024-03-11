@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="individual.me.repository.ArticleRepository">
+
+    <insert id="insertArticle">
+        insert into article values (null,#{article.author},#{article.cover},#{article.title},#{article.content}
+                                   ,#{article.publishDate},null,#{article.status},#{article.category},0)
+    </insert>
+
+    <update id="updateArticle">
+        UPDATE article
+        <set>
+            <if test="cover != null">cover = #{article.category},</if>
+            <if test="title != null">title = #{article.title},</if>
+            <if test="content != null">content = #{article.content}</if>
+            <if test="status != null">status = #{article.status}</if>
+            <if test="category != null">category = #{article.category},</if>
+            lastModifyDate = SYSDATE()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteArticle">
+        update article set deleted = 1 where id = #{id}
+    </delete>
+
+    <select id="getArticleById" resultType="individual.me.pojo.Article">
+        select * from user where id = #{id}
+    </select>
+
+</mapper>
