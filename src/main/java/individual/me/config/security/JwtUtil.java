@@ -3,6 +3,7 @@ package individual.me.config.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.el.parser.Token;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class JwtUtil {
 
@@ -50,19 +52,18 @@ public class JwtUtil {
 
     /**
      * 踩坑：key是静态生成，每次启动生成的都不一致，导致如果重启的话，获得的私钥就不一样，导致验证出现错误！！！！
+     * 踩坑：返回UsernamePasswordAuthenticationToken第三个参数没有设置，导致在验证setAuthenticated(true)，出现错误！
      * @param token
      * @return
      */
     public static Authentication getAuthentication(String token){
-
-            System.out.println(token);
-            Jws<Claims> claimsJws = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token);
-            String username = claimsJws.getPayload().get(USERNAME, String.class);
-        System.out.println(username);
-            String authority = claimsJws.getPayload().get(AUTHORITY,String.class);
-        System.out.println(authority);
-            User user = new User(username,"ENCRYPTED", Collections.singleton(new SimpleGrantedAuthority(authority)));
-            return new UsernamePasswordAuthenticationToken(user,token);
+        log.info("toke：{}",token);
+        Jws<Claims> claimsJws = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token);
+        String username = claimsJws.getPayload().get(USERNAME, String.class);
+        String authority = claimsJws.getPayload().get(AUTHORITY,String.class);
+        log.info("username：{}，authority：{}",username,authority);
+        User user = new User(username,"ENCRYPTED", Collections.singleton(new SimpleGrantedAuthority(authority)));
+        return new UsernamePasswordAuthenticationToken(user,token,Collections.singleton(new SimpleGrantedAuthority(authority)));
 
     }
 }

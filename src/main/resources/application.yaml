@@ -4,6 +4,15 @@ spring:
     url: jdbc:mysql://47.109.133.136:3306/myweb?useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 3
+      min-idle: 3
+      max-active: 18
+      max-wait: 60000
+      # 配置多久进行一次检测，检测需要关闭的空闲连接 单位毫秒
+      time-between-eviction-runs-millis: 60000
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

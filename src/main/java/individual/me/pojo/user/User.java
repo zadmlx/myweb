@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private long id;
+    private Integer id;
     private String username;
     private String password;
     private String phoneNumber;
@@ -25,7 +25,7 @@ public class User {
     private String authority;
 
 
-    public User(long id, String username, String password, LocalDateTime registerDate) {
+    public User(Integer id, String username, String password, LocalDateTime registerDate) {
         this.id = id;
         this.username = username;
         this.password = password;
