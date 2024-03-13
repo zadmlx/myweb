@@ -12,7 +12,7 @@ import lombok.ToString;
 public class Article {
     private Integer id;
     private Integer author;
-    private String cover;
+    private String abs;
     private String title;
     private String content;
     private String publishDate;

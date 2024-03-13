@@ -5,7 +5,7 @@
 <mapper namespace="individual.me.repository.ArticleRepository">
 
     <insert id="insertArticle">
-        insert into article values (null,#{article.author},#{article.cover},#{article.title},#{article.content}
+        insert into article values (null,#{article.author},#{article.abs},#{article.title},#{article.content}
                                    ,SYSDATE(),null,#{article.category},0)
     </insert>
 
