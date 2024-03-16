@@ -1,5 +1,6 @@
 package individual.me.controller;
 
+import individual.me.config.aspect.Any;
 import individual.me.config.security.JwtUtil;
 import individual.me.pojo.user.AuthUser;
 import individual.me.pojo.user.LoginUser;
@@ -31,6 +32,7 @@ public class LoginController {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    @Any
     @PostMapping("/login")
     public Result login(@RequestBody LoginUser user){
         log.info("准备登录");
@@ -46,6 +48,7 @@ public class LoginController {
         return Result.ok("登录成功",jwtToken,200);
     }
 
+    @Any
     @PostMapping("/register")
     public Result register(@RequestBody User user){
         user.setPassword(encoder.encode(user.getPassword()));

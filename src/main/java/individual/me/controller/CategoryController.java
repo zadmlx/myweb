@@ -1,5 +1,6 @@
 package individual.me.controller;
 
+import individual.me.config.aspect.Any;
 import individual.me.pojo.Category;
 import individual.me.pojo.Result;
 import individual.me.service.CategoryService;
@@ -29,6 +30,7 @@ public class CategoryController {
         return Result.ok("删除成功");
     }
 
+    @Any
     @GetMapping("/{id}")
     public Result selectCategory(@PathVariable("id") int id){
         log.info("请求进入");
@@ -36,6 +38,7 @@ public class CategoryController {
         return Result.ok(category);
     }
 
+    @Any
     @GetMapping()
     public Result selectAllCategory(){
         List<Category> categories = categoryService.selectAllCategories();

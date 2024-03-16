@@ -26,7 +26,7 @@
     </delete>
 
     <select id="getArticleById" resultType="individual.me.pojo.Article">
-        select * from user where id = #{id}
+        select * from article where id = #{id}
     </select>
 
 </mapper>

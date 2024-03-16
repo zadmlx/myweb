@@ -6,6 +6,7 @@ import individual.me.pojo.user.AuthUser;
 import individual.me.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,7 @@ public class ArticleController {
     @Autowired
     UserDetailsService userDetailsService;
 
+    @PreAuthorize("@ac.check('admin')")
     @PostMapping()
     public Result insertArticle(@RequestBody Article article){
         log.info("article：{}",article);
@@ -38,6 +40,7 @@ public class ArticleController {
         return Result.ok("添加成功");
     }
 
+    @PreAuthorize("@ac.check('admin')")
     @DeleteMapping("/{id}")
     public Result deleteArticle(@PathVariable("id") int id){
         try {
@@ -59,6 +62,7 @@ public class ArticleController {
         }
     }
 
+    @PreAuthorize("@ac.check('admin')")
     @PutMapping()
     public Result updateArticle(@RequestBody Article article){
         try {
