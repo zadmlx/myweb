@@ -1,6 +1,10 @@
 package individual.me.service;
 
 import individual.me.pojo.Article;
+import individual.me.pojo.ArticleVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ArticleService {
 
@@ -11,4 +15,5 @@ public interface ArticleService {
     void updateArticle(Article article);
 
     Article getArticleById(int id);
+    List<ArticleVo> getAllArticleVo(@Param("id")int id);
 }

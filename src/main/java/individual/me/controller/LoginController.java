@@ -42,7 +42,7 @@ public class LoginController {
         AuthUser authUser = (AuthUser) authentication.getPrincipal();
         String authority = authUser.getUser().getAuthority();
 
-        String jwtToken = JwtUtil.createToken(authority, authUser.getUsername());
+        String jwtToken = JwtUtil.createToken(authority, authUser.getUsername(),authUser.getUser().getId());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return Result.ok("登录成功",jwtToken,200);

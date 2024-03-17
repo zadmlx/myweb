@@ -1,9 +1,13 @@
 package individual.me.controller;
 
+import individual.me.config.aspect.Any;
+import individual.me.config.security.JwtUtil;
 import individual.me.pojo.Article;
+import individual.me.pojo.ArticleVo;
 import individual.me.pojo.Result;
 import individual.me.pojo.user.AuthUser;
 import individual.me.service.ArticleService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/article")
@@ -21,11 +27,13 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+
     @Autowired
     UserDetailsService userDetailsService;
 
-    @PreAuthorize("@ac.check('admin')")
+
     @PostMapping()
+    @PreAuthorize("@ac.check('admin')")
     public Result insertArticle(@RequestBody Article article){
         log.info("article：{}",article);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -40,6 +48,7 @@ public class ArticleController {
         return Result.ok("添加成功");
     }
 
+
     @PreAuthorize("@ac.check('admin')")
     @DeleteMapping("/{id}")
     public Result deleteArticle(@PathVariable("id") int id){
@@ -51,6 +60,7 @@ public class ArticleController {
         return Result.ok("删除成功");
     }
 
+    @Any
     @GetMapping("/{id}")
     public Result getArticle(@PathVariable("id") int id){
         try {
@@ -72,4 +82,15 @@ public class ArticleController {
             return Result.fail(e.getMessage());
         }
     }
+
+    @Any
+    @GetMapping()
+    public Result getAllArticleVo(HttpServletRequest request){
+        String token = JwtUtil.getToken(request);
+        Integer id = JwtUtil.getId(token);
+        List<ArticleVo> articleVo = articleService.getAllArticleVo(id);
+        return Result.ok(articleVo);
+    }
+
+
 }

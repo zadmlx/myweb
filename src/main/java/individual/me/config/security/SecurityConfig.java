@@ -1,8 +1,8 @@
 package individual.me.config.security;
 
 import individual.me.config.aspect.Any;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
+@Slf4j
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig implements ApplicationContextAware {
@@ -85,9 +87,13 @@ public class SecurityConfig implements ApplicationContextAware {
         handlerMethods.forEach((info,method)->{
             if (method.hasMethodAnnotation(Any.class)){
                 if (info.getPathPatternsCondition() != null) {
-                    anySet.addAll(info.getPathPatternsCondition().getDirectPaths());
+                    // 注意，使用RESTful风格的时候，getDirectPaths的路径会有问题
+                    //anySet.addAll(info.getPathPatternsCondition().getDirectPaths());
+                    info.getPathPatternsCondition().getPatterns().forEach(pattern->anySet.add(pattern.getPatternString()));
                 }
             }
         });
+
+        anySet.forEach((value)-> log.info("allowed path :{}",value));
     }
 }
