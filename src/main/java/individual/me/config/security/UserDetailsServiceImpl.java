@@ -21,6 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = repository.getUserByUsername(username);
+        if (user == null) throw new UsernameNotFoundException("用户名或者密码不存在");
         return new AuthUser(user);
     }
 }

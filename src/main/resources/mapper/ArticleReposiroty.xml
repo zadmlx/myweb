@@ -5,8 +5,8 @@
 <mapper namespace="individual.me.repository.ArticleRepository">
 
     <insert id="insertArticle">
-        insert into article values (null,#{article.author},#{article.cover},#{article.title},#{article.content}
-                                   ,#{article.publishDate},null,#{article.status},#{article.category},0)
+        insert into article values (null,#{article.author},#{article.abs},#{article.title},#{article.content}
+                                   ,SYSDATE(),null,#{article.category},0)
     </insert>
 
     <update id="updateArticle">
@@ -15,7 +15,6 @@
             <if test="cover != null">cover = #{article.category},</if>
             <if test="title != null">title = #{article.title},</if>
             <if test="content != null">content = #{article.content}</if>
-            <if test="status != null">status = #{article.status}</if>
             <if test="category != null">category = #{article.category},</if>
             lastModifyDate = SYSDATE()
         </set>
@@ -27,7 +26,10 @@
     </delete>
 
     <select id="getArticleById" resultType="individual.me.pojo.Article">
-        select * from user where id = #{id}
+        select * from article where id = #{id}
+    </select>
+    <select id="getAllArticleVo" resultType="individual.me.pojo.ArticleVo">
+        select article.id,article.abs,article.title,article.publishDate from article where author = #{id}
     </select>
 
 </mapper>

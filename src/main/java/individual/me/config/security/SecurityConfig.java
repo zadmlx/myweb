@@ -1,9 +1,9 @@
 package individual.me.config.security;
 
+import individual.me.config.aspect.Any;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 
 @Slf4j
 @Configuration
@@ -42,16 +45,18 @@ public class SecurityConfig implements ApplicationContextAware {
     private AuthenticationEntryPoint entryPoint;
 
     @Autowired
-    private JwtFilter jwtFilter;
+    private JwtFilter loginFilter;
+
+    private Set<String> anySet;
 
     @Bean
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {
-        security.authorizeHttpRequests(auth->auth.requestMatchers("/login","/register","/test").permitAll().requestMatchers("/**").authenticated())
+        security.authorizeHttpRequests(auth->auth.requestMatchers(anySet.toArray(new String[0])).permitAll().requestMatchers("/**").authenticated())
                 .userDetailsService(userDetailsService)
                 .exceptionHandling(e-> e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(entryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors-> cors.configurationSource(cors()))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
         return security.build();
     }
 
@@ -73,12 +78,22 @@ public class SecurityConfig implements ApplicationContextAware {
         return source;
     }
 
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        RequestMappingHandlerMapping handlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
-        /*handlerMethods.forEach((info,method)->{
-            log.info("key:{},value:{}",info.getpa);
-        });*/
+        anySet = new HashSet<>();
+        RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = mapping.getHandlerMethods();
+        handlerMethods.forEach((info,method)->{
+            if (method.hasMethodAnnotation(Any.class)){
+                if (info.getPathPatternsCondition() != null) {
+                    // 注意，使用RESTful风格的时候，getDirectPaths的路径会有问题
+                    //anySet.addAll(info.getPathPatternsCondition().getDirectPaths());
+                    info.getPathPatternsCondition().getPatterns().forEach(pattern->anySet.add(pattern.getPatternString()));
+                }
+            }
+        });
+
+        anySet.forEach((value)-> log.info("allowed path :{}",value));
     }
 }
