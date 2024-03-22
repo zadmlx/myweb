@@ -10,8 +10,11 @@ import individual.me.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,9 +29,11 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-
     @Autowired
     private AuthenticationManagerBuilder builder;
+
+    @Autowired
+    private AuthenticationConfiguration configuration;
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -39,8 +44,9 @@ public class LoginController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
 
         // AuthenticationManager无法直接拿到，需要使用它的builder构建之后拿到
+        // 也可以通过AuthenticationConfiguration.getAuthenticationManager()拿到
+        // 但是无法通过HttpSecurity.getSharedObject(AuthenticationManager)
         Authentication authentication = this.builder.getObject().authenticate(token);
-
         AuthUser authUser = (AuthUser) authentication.getPrincipal();
         String authority = authUser.getUser().getAuthority();
 
