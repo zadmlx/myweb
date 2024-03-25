@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginPhone {
     private String phoneNumber;
-    private int code;
+    private String code;
 }

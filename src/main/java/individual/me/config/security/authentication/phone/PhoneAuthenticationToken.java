@@ -1,4 +1,4 @@
-package individual.me.config.security.authentication;
+package individual.me.config.security.authentication.phone;
 
 import individual.me.pojo.user.AuthUser;
 import individual.me.pojo.user.User;
@@ -12,12 +12,12 @@ import java.util.Collection;
 public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
 
     private String phoneNumber;
-    private int code;
+    private String code;
 
     private AuthUser principle;
     private Object credential;
 
-    public PhoneAuthenticationToken(String phoneNumber, int code) {
+    public PhoneAuthenticationToken(String phoneNumber, String code) {
         super(null);
         this.phoneNumber = phoneNumber;
         this.code = code;

@@ -1,7 +1,7 @@
 package individual.me.config.security;
 
 import individual.me.config.aspect.Any;
-import individual.me.config.security.authentication.PhoneProvider;
+import individual.me.config.security.authentication.phone.PhoneLoginConfigurer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -45,11 +46,9 @@ public class SecurityConfig implements ApplicationContextAware {
     @Autowired
     private AuthenticationEntryPoint entryPoint;
 
-    @Autowired
-    private JwtFilter loginFilter;
 
     @Autowired
-    private PhoneProvider phoneProvider;
+    private JwtFilter jwtFilter;
 
     private Set<String> anySet;
 
@@ -57,11 +56,13 @@ public class SecurityConfig implements ApplicationContextAware {
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {
         security.authorizeHttpRequests(auth->auth.requestMatchers(anySet.toArray(new String[0])).permitAll().requestMatchers("/**").authenticated())
                 .userDetailsService(userDetailsService)
-                .authenticationProvider(phoneProvider)
+                .formLogin(form->form.loginPage("/login"))
+                //.authenticationProvider(phoneProvider)
                 .exceptionHandling(e-> e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(entryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors-> cors.configurationSource(cors()))
-                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .with(new PhoneLoginConfigurer(), Customizer.withDefaults());
         return security.build();
     }
 

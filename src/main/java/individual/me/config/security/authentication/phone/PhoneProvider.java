@@ -1,37 +1,35 @@
-package individual.me.config.security.authentication;
+package individual.me.config.security.authentication.phone;
 
 import individual.me.pojo.user.AuthUser;
 import individual.me.pojo.user.User;
 import individual.me.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
-@Component
+
+@AllArgsConstructor
 public class PhoneProvider implements AuthenticationProvider {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         PhoneAuthenticationToken rowToken = (PhoneAuthenticationToken) authentication;
-        Object o = redisTemplate.opsForValue().get(rowToken.getPhoneNumber());
-        if (((int) o) != rowToken.getCode()){
+        /*Object o = redisTemplate.opsForValue().get(rowToken.getPhoneNumber());
+        if (o != rowToken.getCode()){
             throw new BadCredentialsException("验证码过期");
-        }
+        }*/
         String phoneNumber = rowToken.getPhoneNumber();
         User user = userRepository.loadUserByPhone(phoneNumber);
         if (user == null) {
@@ -45,6 +43,6 @@ public class PhoneProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return authentication.isAssignableFrom(PhoneAuthenticationToken.class);
     }
 }

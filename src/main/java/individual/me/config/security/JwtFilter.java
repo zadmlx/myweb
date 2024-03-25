@@ -17,9 +17,6 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String HEADER = "Authorization";
-    private static final String START_WITH = "Bearer";
-
     /**
      * 根据 token获取到用户信息并存入SecurityContextHolder
      * @param request

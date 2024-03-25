@@ -2,7 +2,7 @@ package individual.me.controller;
 
 import individual.me.config.aspect.Any;
 import individual.me.config.security.JwtUtil;
-import individual.me.config.security.authentication.PhoneAuthenticationToken;
+import individual.me.config.security.authentication.phone.PhoneAuthenticationToken;
 import individual.me.pojo.login.LoginPhone;
 import individual.me.pojo.user.AuthUser;
 import individual.me.pojo.login.LoginUser;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +35,9 @@ public class LoginController {
 
     @Autowired
     private AuthenticationConfiguration configuration;
+
+    @Autowired
+    private HttpSecurity httpSecurity;
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -56,7 +60,7 @@ public class LoginController {
         return Result.ok("登录成功",jwtToken,200);
     }
 
-    @Any
+/*    @Any
     @PostMapping("/login/v1")
     public Result loginViaPhone(@RequestBody LoginPhone phone){
         log.info("准备登录");
@@ -73,7 +77,7 @@ public class LoginController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return Result.ok("登录成功",jwtToken,200);
-    }
+    }*/
 
     @Any
     @PostMapping("/register")
