@@ -1,6 +1,7 @@
 package individual.me.config.security;
 
 import individual.me.config.aspect.Any;
+import individual.me.config.security.authentication.PhoneProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,16 @@ public class SecurityConfig implements ApplicationContextAware {
     @Autowired
     private JwtFilter loginFilter;
 
+    @Autowired
+    private PhoneProvider phoneProvider;
+
     private Set<String> anySet;
 
     @Bean
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {
         security.authorizeHttpRequests(auth->auth.requestMatchers(anySet.toArray(new String[0])).permitAll().requestMatchers("/**").authenticated())
                 .userDetailsService(userDetailsService)
+                .authenticationProvider(phoneProvider)
                 .exceptionHandling(e-> e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(entryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors-> cors.configurationSource(cors()))

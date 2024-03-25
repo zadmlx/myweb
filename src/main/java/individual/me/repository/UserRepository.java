@@ -14,4 +14,6 @@ public interface UserRepository {
     void deleteUserById(@Param("id") int id);
 
     void insertUser(@Param("user") User user);
+
+    User loadUserByPhone(@Param("phone")String phone);
 }

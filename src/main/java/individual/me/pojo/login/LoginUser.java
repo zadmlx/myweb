@@ -1,4 +1,4 @@
-package individual.me.pojo.user;
+package individual.me.pojo.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

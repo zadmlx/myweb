@@ -28,6 +28,9 @@
     <select id="getUserById" resultType="individual.me.pojo.user.User">
         select * from user where user.id = #{id}
     </select>
+    <select id="loadUserByPhone" resultType="individual.me.pojo.user.User">
+        select * from user where user.phoneNumber = #{phone}
+    </select>
 
 
 </mapper>

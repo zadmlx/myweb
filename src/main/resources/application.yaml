@@ -13,9 +13,15 @@ spring:
       # 配置多久进行一次检测，检测需要关闭的空闲连接 单位毫秒
       time-between-eviction-runs-millis: 60000
 
+
+  data:
+    redis:
+      host: 47.109.133.136
+      port: 6379
+      password: 19980504Dx!
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:mapper/*.xml
-
