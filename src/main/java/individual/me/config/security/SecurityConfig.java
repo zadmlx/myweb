@@ -56,8 +56,6 @@ public class SecurityConfig implements ApplicationContextAware {
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {
         security.authorizeHttpRequests(auth->auth.requestMatchers(anySet.toArray(new String[0])).permitAll().requestMatchers("/**").authenticated())
                 .userDetailsService(userDetailsService)
-                .formLogin(form->form.loginPage("/login"))
-                //.authenticationProvider(phoneProvider)
                 .exceptionHandling(e-> e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(entryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors-> cors.configurationSource(cors()))
