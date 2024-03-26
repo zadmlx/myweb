@@ -1,4 +1,4 @@
-package individual.me.config.security;
+package individual.me.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
 public class JwtUtil {
 
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="individual.me.log.LogMapper">
+
+    <insert id="insertLog">
+        insert into mylog values(null,#{mylog.method},#{mylog.timeCost},#{mylog.operator}, sysdate(),#{mylog.note})
+    </insert>
+    <delete id="deleteLog">
+        delete from mylog where id = #{id}
+    </delete>
+    <select id="selectLog" resultType="individual.me.log.MyLog">
+        select (mylog.id,mylog.method,mylog.timeCost,mylog.operator,mylog.createTime,mylog.note) from mylog
+    </select>
+</mapper>

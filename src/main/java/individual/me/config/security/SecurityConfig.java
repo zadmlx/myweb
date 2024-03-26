@@ -1,6 +1,9 @@
 package individual.me.config.security;
 
-import individual.me.config.aspect.Any;
+import individual.me.config.security.aspect.Any;
+import individual.me.config.security.authentication.AuthenticationFailureHandlerImpl;
+import individual.me.config.security.authentication.AuthenticationSuccessHandlerImpl;
+import individual.me.config.security.jwt.JwtFilter;
 import individual.me.config.security.authentication.phone.PhoneLoginConfigurer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -9,16 +12,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -39,27 +42,19 @@ public class SecurityConfig implements ApplicationContextAware {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-
-    @Autowired
-    private AuthenticationEntryPoint entryPoint;
-
-
-    @Autowired
-    private JwtFilter jwtFilter;
-
     private Set<String> anySet;
 
     @Bean
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity security) throws Exception {
+        MappingJackson2HttpMessageConverter messageConverter = security.getSharedObject(ApplicationContext.class).getBean(MappingJackson2HttpMessageConverter.class);
         security.authorizeHttpRequests(auth->auth.requestMatchers(anySet.toArray(new String[0])).permitAll().requestMatchers("/**").authenticated())
                 .userDetailsService(userDetailsService)
-                .exceptionHandling(e-> e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(entryPoint))
+                .exceptionHandling(e-> e.accessDeniedHandler(new AccessDeniedHandlerImpl(messageConverter)).authenticationEntryPoint(new AuthenticationEntryPointImpl(messageConverter)))
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(form-> form.loginPage("/login").successHandler(new AuthenticationSuccessHandlerImpl(messageConverter)).failureHandler(new AuthenticationFailureHandlerImpl(messageConverter)))
                 .cors(cors-> cors.configurationSource(cors()))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .with(new PhoneLoginConfigurer(), Customizer.withDefaults());
         return security.build();
     }

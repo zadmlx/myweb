@@ -1,9 +1,7 @@
 package individual.me.controller;
 
-import individual.me.config.aspect.Any;
-import individual.me.config.security.JwtUtil;
-import individual.me.config.security.authentication.phone.PhoneAuthenticationToken;
-import individual.me.pojo.login.LoginPhone;
+import individual.me.config.security.aspect.Any;
+import individual.me.config.security.jwt.JwtUtil;
 import individual.me.pojo.user.AuthUser;
 import individual.me.pojo.login.LoginUser;
 import individual.me.pojo.Result;
@@ -32,12 +30,6 @@ public class LoginController {
 
     @Autowired
     private AuthenticationManagerBuilder builder;
-
-    @Autowired
-    private AuthenticationConfiguration configuration;
-
-    @Autowired
-    private HttpSecurity httpSecurity;
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 

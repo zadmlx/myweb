@@ -4,7 +4,6 @@ import individual.me.pojo.user.AuthUser;
 import individual.me.pojo.user.User;
 import individual.me.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -43,6 +42,6 @@ public class PhoneProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.isAssignableFrom(PhoneAuthenticationToken.class);
+        return PhoneAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

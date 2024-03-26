@@ -1,7 +1,7 @@
 package individual.me.controller;
 
-import individual.me.config.aspect.Any;
-import individual.me.config.security.JwtUtil;
+import individual.me.config.security.jwt.JwtUtil;
+import individual.me.log.Log;
 import individual.me.pojo.Article;
 import individual.me.pojo.ArticleVo;
 import individual.me.pojo.Result;
@@ -9,11 +9,11 @@ import individual.me.pojo.user.AuthUser;
 import individual.me.service.ArticleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import individual.me.config.security.aspect.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,12 +39,9 @@ public class ArticleController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AuthUser userDetails = (AuthUser) userDetailsService.loadUserByUsername(user.getUsername());
         article.setAuthor(userDetails.getUser().getId());
-        log.info("article：{}",article);
-        try {
-            articleService.insertArticle(article);
-        }catch (Exception e){
-            return Result.fail(e.getMessage());
-        }
+
+        articleService.insertArticle(article);
+
         return Result.ok("添加成功");
     }
 
@@ -61,6 +58,7 @@ public class ArticleController {
     }
 
     @Any
+    @Log
     @GetMapping("/{id}")
     public Result getArticle(@PathVariable("id") int id){
         try {

@@ -1,11 +1,12 @@
-package individual.me.config.aspect;
+package individual.me.log;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Any {
+@Target(ElementType.METHOD)
+public @interface Log {
+    String note() default "";
 }

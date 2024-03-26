@@ -1,6 +1,6 @@
 package individual.me.controller;
 
-import individual.me.config.aspect.Any;
+import individual.me.config.security.aspect.Any;
 import individual.me.pojo.Category;
 import individual.me.pojo.Result;
 import individual.me.service.CategoryService;
