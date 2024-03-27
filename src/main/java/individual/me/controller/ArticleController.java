@@ -3,7 +3,6 @@ package individual.me.controller;
 import individual.me.config.security.jwt.JwtUtil;
 import individual.me.log.Log;
 import individual.me.pojo.Article;
-import individual.me.pojo.ArticleVo;
 import individual.me.pojo.Result;
 import individual.me.pojo.user.AuthUser;
 import individual.me.service.ArticleService;
@@ -32,6 +31,7 @@ public class ArticleController {
     UserDetailsService userDetailsService;
 
 
+    @Log
     @PostMapping()
     @PreAuthorize("@ac.check('admin')")
     public Result insertArticle(@RequestBody Article article){
@@ -46,6 +46,7 @@ public class ArticleController {
     }
 
 
+    @Log
     @PreAuthorize("@ac.check('admin')")
     @DeleteMapping("/{id}")
     public Result deleteArticle(@PathVariable("id") int id){
@@ -61,24 +62,16 @@ public class ArticleController {
     @Log
     @GetMapping("/{id}")
     public Result getArticle(@PathVariable("id") int id){
-        try {
-            Article article = articleService.getArticleById(id);
-            return Result.ok(article);
-        }
-        catch (Exception e){
-            return Result.fail(e.getMessage());
-        }
+        return Result.ok(articleService.getArticleById(id));
     }
 
+    @Log
     @PreAuthorize("@ac.check('admin')")
     @PutMapping()
     public Result updateArticle(@RequestBody Article article){
-        try {
-            articleService.updateArticle(article);
-            return Result.ok("更新成功");
-        }catch (Exception e){
-            return Result.fail(e.getMessage());
-        }
+        articleService.updateArticle(article);
+        return Result.ok("更新成功");
+
     }
 
     @Any
@@ -86,7 +79,7 @@ public class ArticleController {
     public Result getAllArticleVo(HttpServletRequest request){
         String token = JwtUtil.getToken(request);
         Integer id = JwtUtil.getId(token);
-        List<ArticleVo> articleVo = articleService.getAllArticleVo(id);
+        List<Article> articleVo = articleService.getAllArticleVo(id);
         return Result.ok(articleVo);
     }
 

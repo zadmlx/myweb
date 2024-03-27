@@ -1,7 +1,6 @@
 package individual.me.config.security.authentication;
 
 import individual.me.pojo.Result;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -21,7 +20,7 @@ public class AuthenticationFailureHandlerImpl  implements AuthenticationFailureH
     }
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         Result result = Result.fail(exception.getMessage());
         messageConverter.write(result, MediaType.APPLICATION_JSON,new ServletServerHttpResponse(response));
     }

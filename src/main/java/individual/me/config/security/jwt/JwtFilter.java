@@ -11,17 +11,9 @@ import java.io.IOException;
 
 public class JwtFilter extends OncePerRequestFilter {
 
-    /**
-     * 根据 token获取到用户信息并存入SecurityContextHolder
-     * @param request
-     * @param response
-     * @param filterChain
-     * @throws ServletException
-     * @throws IOException
-     */
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
 
         String token = JwtUtil.getToken(request);
 

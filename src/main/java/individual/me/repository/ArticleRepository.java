@@ -1,7 +1,6 @@
 package individual.me.repository;
 
 import individual.me.pojo.Article;
-import individual.me.pojo.ArticleVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,5 +17,5 @@ public interface ArticleRepository {
 
     Article getArticleById(@Param("id") int id);
 
-    List<ArticleVo> getAllArticleVo(@Param("id")int id);
+    List<Article> getAllArticle(@Param("id")int id);
 }

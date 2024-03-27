@@ -3,7 +3,6 @@ package individual.me.config.security.authentication;
 import individual.me.config.security.jwt.JwtUtil;
 import individual.me.pojo.Result;
 import individual.me.pojo.user.AuthUser;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -24,7 +23,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         AuthUser authUser = (AuthUser) authentication.getPrincipal();
         String token = JwtUtil.createToken(authUser.getUser().getAuthority(), authUser.getUsername(), authUser.getUser().getId());
         SecurityContextHolder.getContext().setAuthentication(authentication);

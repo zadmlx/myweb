@@ -28,8 +28,9 @@
     <select id="getArticleById" resultType="individual.me.pojo.Article">
         select * from article where id = #{id}
     </select>
-    <select id="getAllArticleVo" resultType="individual.me.pojo.ArticleVo">
-        select article.id,article.abs,article.title,article.publishDate from article where author = #{id}
+
+    <select id="getAllArticle" resultType="individual.me.pojo.Article">
+        select id,abs,title,publishDate,lastModifyDate,category from article where author = #{id} and deleted = 0
     </select>
 
 </mapper>
